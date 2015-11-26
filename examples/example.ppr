@@ -1,0 +1,55 @@
+##makes logs directory
+mkdir logs;
+
+##get genome reference
+mkdir genome;
+bsub 	
+	-e logs/getreference.err
+	-o logs/getreference.log
+	-J get_reference_genome
+	"
+	wget ftp://ftp.ensembl.org/pub/release-82/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz ;
+	gunzip Mus_musculus.GRCm38.dna.primary_assembly.fa.gz ;
+	mv Mus_musculus.GRCm38.dna.primary_assembly.fa genome/. ;
+	~/pushbullet.py done getting the reference
+	"
+
+##make STAR genome indexes
+rm logs/map*;
+bsub 	
+	-e logs/indexing.err
+	-o logs/indexing.log
+	-J logs/make_star_genome_index
+	-M 200000
+	"
+	./STAR-STAR_2.4.2a/bin/Linux_x86_64/STAR
+		--runMode 	genomeGenerate
+		--runThreadN 	4
+		--genomeDir 	genome
+		--genomeFastaFiles genome/Mus_musculus.GRCm38.dna.primary_assembly.fa
+		--sjdbGTFfile 	../Mus_musculus.GRCm38.709.gtf
+	;
+	~/pushbullet.py done star indexing	
+	" 
+
+##makes maped dir	
+mkdir mapped;
+
+
+##map 
+# samples = 10AL 11AL 12AL 13DR 14DR 15DR 16AL 17AL 18AL 19AL 1Y 20DR 21DR 2Y 3Y 4AL 5AL 6AL 7DR 8DR 9DR G_ALtoDR1 G_ALtoDR2 G_ALtoDR3 G_DRtoAL1 G_DRtoAL2 G_DRtoAL3 G_PFAL1 G_PFAL2 G_PFAL3 G_PFDR1 G_PFDR2 G_PFDR3
+bsub 	
+	-e logs/map_[[samples]].log.err
+	-o logs/map_[[samples]].log.log
+	-J STAR_mapping_[[samples]]
+	-M 50000
+	"
+	STAR
+		--runMode	alignReads	#this only runs on the latest version of STAR
+		--twopassMode 	Basic
+		--runThreadN	4
+		--genomeDir 	genome
+		--readFilesIn	All_Tallied_Fastqs/[[samples]]_SeqNo_1_retallied.newname.fastq
+				All_Tallied_Fastqs/[[samples]]_SeqNo_2_retallied.newname.fastq
+		--outFileNamePrefix mapped/[[samples]]
+	" 
