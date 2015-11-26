@@ -1,0 +1,50 @@
+##this is the title
+echo title
+
+##double hash separate the commandblocks you can also use tabs and multiple lines per command and comments
+
+echo 	-n			#does not print new line
+	'second command\n'	#aded newline at the end
+
+##to view the commands you can run piper
+
+piper basic.ppr
+
+##you can ask for a specific command
+
+piper 	-s 3			#s option runs a specific step 
+	basic.ppr
+
+##you can ask also to show the command in a line rather than paragraph
+
+piper 	-s 4
+	-v			#v options prints the parsed command 
+	basic.ppr
+
+##piper can also run the commands 
+
+piper 	-s 0,1			#s option acceps steps in commas (1,2,3,4) or in in ranges (1-4)
+	-r
+	-v
+	basic.ppr
+
+##you can also add variables by folowing title with single hash and setting variables (set in double square brackets)
+#number = 1 
+
+echo [[number]]
+
+##you can also add vectors (will run all iterations of the vector)
+#numbers = 1 2 3 4 5 6		#vector items are space separated
+
+echo [[numbers]]	
+
+##you can add more than one vector and they will iterate in parallel
+#words=one two three four five six
+
+echo '[[words]] = [[numbers]]'	#variables from previous steps are remembered
+
+
+##if the vectors are not the same length then the smaller ones will cicle
+#type = odd even
+
+echo '[[numbers]] is [[type]]'
