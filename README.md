@@ -19,7 +19,7 @@ It can be written as:
 		-v 
 		'		#as tabs and newlines are trivial it is easy to see the options
 		aawd	-nd 	
-			adw.csv
+				adw.csv
 		' 
 	| 
 	grep	awd 		#this greps the output of the first command
