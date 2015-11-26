@@ -7,17 +7,17 @@ This is designed for when many steps are used in a pipeline and/or many options 
 This tool enables to write a script based in bash that can be easily read and shared.
 Instead of writing a command such as:
 
-	command -o 2 -f 3 -t te.txt -v 'aawd -nd adw.csv' | grep awd > out.csv
+	command -o 2 -f 3 -t /te/gagrrg/saeruiog/esrb_wivv_soeudvn/vrunavCsoc.txt -v 'aawd -nd adw.csv' | grep awd > out.csv
 
 It can be written as:
 
-	##test command (made up jibijabber)
+	##test command (made up jibber-jabber)
 	command	-o	2 	#just a random letter and value as options
 	
-		-f	3 	#more jibijabber
-		-t 	te.txt 
+		-f	3 	#more jibber-jabber
+		-t 	/te/gagrrg/saeruiog/esrb_wivv_soeudvn/vrunavCsoc.txt
 		-v 
-		'		#as tabs and newlines are trivial it is easy to see the options
+		'		#as tabs and newlines are trivial it iaers easy to see the options
 		aawd	-nd 	
 				adw.csv
 		' 
