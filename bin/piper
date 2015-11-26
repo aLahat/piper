@@ -1,0 +1,101 @@
+#!/usr/bin/python
+from optparse import OptionParser
+from glob import glob
+from os import system
+import re
+parser = OptionParser()
+
+parser.add_option('-r','--run',dest='run',
+			help='run commands',
+			action = 'store_true',
+			default = False)
+
+parser.add_option('-v','--verbose',dest='v',
+			help='print the commands',
+			action = 'store_true',
+			default = False)
+
+parser.add_option('-s',dest='steps',
+			help='steps to run',
+			default = '')
+			
+options,args = parser.parse_args()
+run = options.run
+v = options.v
+if args==[]:cmdF = glob('*.ppr')[0]
+else:	cmdF = args[0]
+
+unparsed_commands=open(cmdF).read().split('\x23\x23')[1:]
+commands_n = len(unparsed_commands)
+
+#parse steps
+if options.steps=='':
+	steps=range(commands_n)
+else:
+	steps = []
+	for i in options.steps.split(','):
+		if not '-' in i:
+			steps.append(int(i))
+		else:
+			a,b = i.split('-')
+			steps += range(int(a),int(b)+1)
+
+
+def ZIP(lists):
+	out = []
+	for i in range(len(lists[0])):
+		new = []
+		for j in lists:
+			new.append(j[i])
+		out.append(new)
+	return out
+
+def addGlob(options):
+	out = []
+	for i in options.split():
+		if '*' in i:
+			out += sorted(glob(i))
+		else:
+			out.append(i)	
+	return ' '.join(out)
+
+def parser_command(cmd):
+	cmds = []
+	#toSwitch = map(lambda x: x.split(']]')[0],cmd.split('[['))[1:]
+	toSwitch = re.findall('\[\[(.+?)\]\]',cmd)
+	if toSwitch==[]:return [' '.join(cmd.split())] 
+	opt=[]
+	for options in toSwitch:
+		opt.append(addGlob(options))
+	for n,i in enumerate(opt):
+		if i.strip() in variables.keys():
+			opt[n]=variables[i]
+	for i in ZIP(map(lambda x: x.split(),opt)):
+		CMD = cmd
+		for pre,post in zip(toSwitch,i):
+			CMD = CMD.replace(	'[[%(pre)s]]' %locals(),
+						'%(post)s'%locals())
+		cmds.append(' '.join(CMD.split()))
+	return cmds
+	
+		
+		
+
+variables = {}
+for s in steps:
+	unparsed_command = unparsed_commands[s]
+	lines = unparsed_command.splitlines()
+	title = lines.pop(0)
+	while lines[0].startswith('\x23'):
+		title +='\n'+lines[0]
+		key ,val= lines.pop(0).split('=')
+		key = key.replace('\x23','').strip()
+		val = val.strip()
+		variables[key]=val
+	unparsed_command='\n'.join(lines)
+	print s,')',title,'\n\t',unparsed_command
+	lines = (' '.join(lines)).split()
+	parsed_commands = parser_command(unparsed_command) 
+	for parsed_command in parsed_commands:
+		if v: print parsed_command
+		if run:system(parsed_command)
