@@ -19,9 +19,17 @@ parser.add_option('-s',dest='steps',
 			help='steps to run',
 			default = '')
 			
+parser.add_option('-b','--baby_steps',dest='baby',
+			help='shows commands one by one',
+			action = 'store_true',
+			default = False)
+
+
 options,args = parser.parse_args()
 run = options.run
 v = options.v
+baby = options.baby
+
 if args==[]:cmdF = glob('*.ppr')[0]
 else:	cmdF = args[0]
 
@@ -43,10 +51,11 @@ else:
 
 def ZIP(lists):
 	out = []
-	for i in range(len(lists[0])):
+	longestList=max(map(len,lists))
+	for i in range(longestList):
 		new = []
 		for j in lists:
-			new.append(j[i])
+			new.append(j[i%len(j)])
 		out.append(new)
 	return out
 
@@ -82,7 +91,7 @@ def parser_command(cmd):
 		
 
 variables = {}
-for s in steps:
+for s in range(len(unparsed_commands)):
 	unparsed_command = unparsed_commands[s]
 	lines = unparsed_command.splitlines()
 	title = lines.pop(0)
@@ -90,12 +99,19 @@ for s in steps:
 		title +='\n'+lines[0]
 		key ,val= lines.pop(0).split('=')
 		key = key.replace('\x23','').strip()
+		val = val.split('\x23')[0]
 		val = val.strip()
 		variables[key]=val
+	if not s in steps:
+		continue
 	unparsed_command='\n'.join(lines)
 	print s,')',title,'\n\t',unparsed_command
+	unparsed_command = '\n'.join(map(	lambda x: x.split('\x23')[0],
+						unparsed_command.split('\n')
+						))
 	lines = (' '.join(lines)).split()
 	parsed_commands = parser_command(unparsed_command) 
 	for parsed_command in parsed_commands:
 		if v: print parsed_command
 		if run:system(parsed_command)
+	if baby: raw_input()
