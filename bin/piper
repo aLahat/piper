@@ -15,6 +15,7 @@ parser.add_option('-v','--verbose',dest='v',
 			action = 'store_true',
 			default = False)
 
+
 parser.add_option('-s',dest='steps',
 			help='steps to run',
 			default = '')
@@ -24,11 +25,29 @@ parser.add_option('-b','--baby_steps',dest='baby',
 			action = 'store_true',
 			default = False)
 
+parser.add_option('-q','--quiet',dest='quiet',
+			help='does not print formated commands',
+			action = 'store_true',
+			default = False)
+
+parser.add_option('-p','--print',dest='printBash',
+			help='only prints postformated commands, can be used to '\
+			'print out bash script',
+			action = 'store_true',
+			default = False)
 
 options,args = parser.parse_args()
 run = options.run
 v = options.v
+quiet =options.quiet
 baby = options.baby
+printBash = options.printBash
+
+if printBash:
+	v=	True
+	quiet=	True
+	run=	False
+	baby=	False
 
 if args==[]:cmdF = glob('*.ppr')[0]
 else:	cmdF = args[0]
@@ -95,6 +114,9 @@ for s in range(len(unparsed_commands)):
 	unparsed_command = unparsed_commands[s]
 	lines = unparsed_command.splitlines()
 	title = lines.pop(0)
+	if printBash:
+		print '\x23'+title
+
 	while lines[0].startswith('\x23'):
 		title +='\n'+lines[0]
 		key ,val= lines.pop(0).split('=')
@@ -105,13 +127,18 @@ for s in range(len(unparsed_commands)):
 	if not s in steps:
 		continue
 	unparsed_command='\n'.join(lines)
-	print s,')',title,'\n\t',unparsed_command
+	if not quiet:
+		print s,')',title,'\n',unparsed_command
 	unparsed_command = '\n'.join(map(	lambda x: x.split('\x23')[0],
 						unparsed_command.split('\n')
 						))
 	lines = (' '.join(lines)).split()
 	parsed_commands = parser_command(unparsed_command) 
 	for parsed_command in parsed_commands:
-		if v: print parsed_command
-		if run:system(parsed_command)
+		if v: 
+			if baby:raw_input()
+			print parsed_command
+		if run:
+			if baby:raw_input()
+			system(parsed_command)
 	if baby: raw_input()
