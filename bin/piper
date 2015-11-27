@@ -30,6 +30,11 @@ parser.add_option('-q','--quiet',dest='quiet',
 			action = 'store_true',
 			default = False)
 
+parser.add_option('-c','--ignoreCheck',dest='ignoreCheck',
+			help='skips steps that have been marked by \x23\x23* (check) instead of \x23\x23 ',
+			action = 'store_true',
+			default = False)
+
 parser.add_option('-p','--print',dest='printBash',
 			help='only prints postformated commands, can be used to '\
 			'print out bash script',
@@ -41,6 +46,7 @@ run = options.run
 v = options.v
 quiet =options.quiet
 baby = options.baby
+ignoreCheck = options.ignoreCheck
 printBash = options.printBash
 
 if printBash:
@@ -124,6 +130,8 @@ for s in range(len(unparsed_commands)):
 		val = val.split('\x23')[0]
 		val = val.strip()
 		variables[key]=val
+	if title[0]=='*' and not ignoreCheck:
+		continue
 	if not s in steps:
 		continue
 	unparsed_command='\n'.join(lines)

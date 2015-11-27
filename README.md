@@ -45,3 +45,6 @@ In addition there is also options of using variables, lists, and wildcards to it
 
 piper allows for reviewing the comandsone by one (-b), printing the parsed comands (-v), viewing specific steps (-s). and most importatly running them (-r).
 piper can also translate a ppr script to a bash script by using -p (--printBash) to print out a bash script.
+
+piper allows to 'check' steps by using ##* in the title instead of ##. Checked steps will be ignore by default (unless using the -c --ignoreCheck options)
+
