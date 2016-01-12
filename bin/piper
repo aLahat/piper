@@ -52,7 +52,6 @@ ignoreCheck = options.ignoreCheck
 printBash = options.printBash
 toprint = []
 
-size = map(int,popen('stty size').read().split())
 if printBash:
 	v=	True
 	quiet=	True
@@ -161,9 +160,13 @@ for s in range(len(unparsed_commands)):
 		if run:
 			system(parsed_command)
 toprint = '\n'.join(toprint)
-line_num = len(toprint.splitlines())
-lines,width = size
-if line_num <lines:
+try:
+	size = map(int,popen('stty size 2>&1 /dev/null').read().split())
+	line_num = len(toprint.splitlines())
+	lines,width = size
+	if line_num <lines:
+		print toprint
+	else:
+		pydoc.pager(toprint)
+except:
 	print toprint
-else:
-	pydoc.pager(toprint)

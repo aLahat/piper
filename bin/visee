@@ -1,8 +1,20 @@
 #!/bin/sh
 
 this=$0
-protocol=$1
+protocol=`pwd`/$1
 command=$2
+
+if [[ $# -eq 0 ]]; then 
+	PROTOCOLS=`ls -a *.v`
+	for PROTOCOL in $PROTOCOLS
+	do
+		echo ''
+		echo '##' $PROTOCOL '##'
+		v $PROTOCOL
+	done
+	exit 0	
+fi
+
 
 source $protocol
 
@@ -16,14 +28,14 @@ if [[ $# -gt 1 ]]; then
 	if $2 2> /dev/null; then
 	echo ''
 	else
-		FUNCTION=`$this $protocol | grep -i $command`
+		FUNCTION=`compgen -A function | grep -i $command`
 		if [[ $FUNCTION = "" ]]; then
 			echo command $command  not found
 		else
 			echo ' '
 			echo $FUNCTION 
 			echo ' '
-			declare -f $FUNCTION | \sed \$d | tail -n +3
+			declare -f $FUNCTION | \sed \$d | tail -n +3 | less -S
 		fi
 	fi
 
