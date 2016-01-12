@@ -1,0 +1,22 @@
+#!/bin/sh
+#echo $1
+source $1
+
+if [[ $# -eq 1 ]]; then
+	compgen -A function | sed \$d
+
+	exit 0
+fi
+
+if [[ $# -gt 1 ]]; then
+	if $2; then
+		echo ''
+	else
+		echo running `$0 $1 | grep $2`
+		 `$0 $1 | grep $2`
+	fi
+
+
+fi
+
+
