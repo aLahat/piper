@@ -1,5 +1,5 @@
 #!/bin/sh
-
+#lslsls
 this=$0
 protocol=`pwd`/$1
 command=$2
