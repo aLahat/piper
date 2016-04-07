@@ -33,9 +33,9 @@ if [[ $# -gt 1 ]]; then
 			echo command $command  not found
 		else
 			echo ' '
-			echo $FUNCTION 
+			echo '###' $FUNCTION '###'
 			echo ' '
-			declare -f $FUNCTION | \sed \$d | tail -n +3 | less -S
+			declare -f $FUNCTION | \sed \$d | tail -n +3 
 		fi
 	fi
 
