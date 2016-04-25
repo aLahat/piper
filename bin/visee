@@ -2,7 +2,7 @@
 
 this=$0
 protocol=`pwd`/$1
-command=$2
+commands=${@:2}
 
 if [[ $# -eq 0 ]]; then 
 	PROTOCOLS=`ls -a *.v`
@@ -24,22 +24,24 @@ if [[ $# -eq 1 ]]; then
 	exit 0
 fi
 
+for command in $commands; do
 if [[ $# -gt 1 ]]; then
 	if $2 2> /dev/null; then
-	echo ''
+		:
 	else
 		FUNCTION=`compgen -A function | grep -i $command`
 		if [[ $FUNCTION = "" ]]; then
 			echo command $command  not found
 		else
-			echo ' '
-			echo '###' $FUNCTION '###'
-			echo ' '
-			declare -f $FUNCTION | \sed \$d | tail -n +3 
+			echo 'echo "###"' $FUNCTION '"###" &&'
+			declare -f $FUNCTION | head -n -2 | tail -n +3
+			declare -f $FUNCTION | head -n -1 | tail -n 1 | awk '{print $0" &&"}'
+#			declare -f $FUNCTION | \sed \$d | tail -n +3 
+			 
 		fi
 	fi
 
 
 fi
-
-
+done
+echo "echo done viper"
