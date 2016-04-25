@@ -1,41 +1,42 @@
-#!/bin/sh
+#!/bin/bash
 
-this=$0
-protocol=`pwd`/$1
-command=$2
+#this=$0
+#protocol=`pwd`/$1
+#command=$2
 
-if [[ $# -eq 0 ]]; then 
-	PROTOCOLS=`ls -a *.v`
-	for PROTOCOL in $PROTOCOLS
-	do
-		echo ''
-		echo '##' $PROTOCOL '##'
-		v $PROTOCOL
-	done
-	exit 0	
-fi
-
-
-source $protocol
-if [[ $# -eq 1 ]]; then
-	compgen -A function | \sed \$d
-	exit 0
-fi
+#if [[ $# -eq 0 ]]; then 
+#	PROTOCOLS=`ls -a *.v`
+#	for PROTOCOL in $PROTOCOLS
+#	do
+#		echo ''
+#		echo '##' $PROTOCOL '##'
+#		v $PROTOCOL
+#	done
+#	exit 0	
+#fi
 
 
+#source $protocol
+#if [[ $# -eq 1 ]]; then
+#	compgen -A function | \sed \$d
+#	exit 0
+#fi
+#
+#
+#
+#if [[ $# -gt 1 ]]; then
+#	if $2 2> /dev/null; then
+#	echo ''
+#	else
+#		FUNCTION=`compgen -A function | grep $command`
+#		if [[ $FUNCTION = "" ]]; then
+#			echo command $command  not found
+#		else
+#			$FUNCTION
+#		fi
+#	fi
+#fi
 
-if [[ $# -gt 1 ]]; then
-	if $2 2> /dev/null; then
-	echo ''
-	else
-		FUNCTION=`compgen -A function | grep $command`
-		if [[ $FUNCTION = "" ]]; then
-			echo command $command  not found
-		else
-			$FUNCTION
-		fi
-	fi
-fi
 
 
-
+visee $@ | bash
